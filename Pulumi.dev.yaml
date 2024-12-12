@@ -1,0 +1,6 @@
+config:
+  gcp:project: reporting-test-444502
+  devops:mySecret:
+    secure: v1:A5ECKTTR3mkQZlsc:1w8WKsw6NwjgSRnSaXjQ5d9tlTyV8n5rFbpsdV9o71g=
+secretsprovider: gcpkms://projects/reporting-test-444502/locations/us-central1/keyRings/reporting-iac-keyring/cryptoKeys/reporting-iac-key
+encryptedkey: CiQA7y1ouQOM48MuTYh8kW1xHC31OcFG74knwc1GZz8B7E6SXCQSSQBPjc0EzEqeAYheghwQn7PxA4iWixAtRFqtOoXUNY+glHM5SIuzh2lEGRVxT7uGY+psIjaQGjBa9e4cAl8NeOYRZlX5aNLRvWg=

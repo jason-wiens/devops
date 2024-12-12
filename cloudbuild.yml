@@ -1,0 +1,48 @@
+steps:
+  # Step 1: Install Pulumi CLI
+  - name: 'gcr.io/cloud-builders/curl'
+    id: 'Install Pulumi'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        curl -fsSL https://get.pulumi.com | sh
+        echo "Pulumi CLI installed."
+
+  # Step 2: Retrieve Service Account Key from Secret Manager
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Retrieve Service Account Key'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Fetching service account key from Secret Manager..."
+        gcloud secrets versions access latest --secret=$_SERVICE_ACCOUNT_KEY_NAME > /workspace/service-account-key.json
+
+  # Step 3: Authenticate with GCP
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Authenticate with GCP'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "Authenticating with GCP using service account..."
+        gcloud auth activate-service-account $_SERVICE_ACCOUNT_EMAIL --key-file=/workspace/service-account-key.json
+        gcloud config set project $_PROJECT_ID
+
+  # Step 4: Run Pulumi Up
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Run Pulumi'
+    entrypoint: 'bash'
+    env:
+      # Pass Google credentials to Pulumi
+      - 'GOOGLE_CREDENTIALS=$(cat /workspace/service-account-key.json)'
+    args:
+      - '-c'
+      - |
+        echo "Initializing Pulumi..."
+        export PATH=$PATH:/root/.pulumi/bin
+        pulumi login
+        pulumi up --yes
+
+timeout: 1200s
