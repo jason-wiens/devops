@@ -24,8 +24,7 @@ export KEY_RING_NAME="$BASE_NAME-keyring"
 export GCP_KMS_URL="gcpkms://projects/$PROJECT_ID/locations/$REGION/keyRings/$KEY_RING_NAME/cryptoKeys/$KEY_NAME"
 
 export TRIGGER_NAME="$BASE_NAME-$STACK_NAME-trigger"
-export REPO_NAME="devops"
-export REPO_OWNER="jason-wiens"
+export REPO="jason-wiens-devops"
 export BRANCH_NAME="main"
 export TAG_REGEX="^$BASE_NAME-$STACK_NAME-.*$"
 export CLOUD_BUILD_CONFIG="cloudbuild.yml"
@@ -75,17 +74,17 @@ gcloud kms keys add-iam-policy-binding $KEY_NAME \
     --project=$PROJECT_ID
 
 #Setup the CI trigger
-echo "Setting up CI trigger $TRIGGER_NAME..."
-sleep 1
-gcloud beta builds triggers create github \
-    --name="$TRIGGER_NAME" \
-    --repo-name="$REPO_NAME" \
-    --repo-owner="$REPO_OWNER" \
-    --branch-pattern="$BRANCH_NAME" \
-    --tag-pattern="$TAG_REGEX" \
-    --build-config="$CLOUD_BUILD_CONFIG" \
-    --project="$PROJECT_ID" \
-    --substitutions=_PROJECT_ID="$PROJECT_ID",_SERVICE_ACCOUNT_KEY_NAME="$SERVICE_ACCOUNT_KEY_NAME",_SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_EMAIL"
+# echo "Setting up CI trigger $TRIGGER_NAME..."
+# sleep 1
+# echo $TAG_REGEX
+# gcloud builds triggers create github \
+#     --build-config="$CLOUD_BUILD_CONFIG" \
+#     --name="$TRIGGER_NAME" \
+#     --repository="projects/$PROJECT_ID/locations/$REGION/connections/github_personal/repositories/" \
+#     --region="$REGION" \
+#     --tag-pattern="$TAG_REGEX" \
+#     --substitutions=_PROJECT_ID="$PROJECT_ID",_SERVICE_ACCOUNT_KEY_NAME="$SERVICE_ACCOUNT_KEY_NAME",_SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_EMAIL" \
+#     --log-http
 
 # create the bucket and enable versioning
 echo "Creating bucket $BUCKET_NAME..."
